@@ -26,13 +26,7 @@ import VHeader from "@/components/f-header.vue";
 
 import { onMounted, ref } from "vue";
 
-// test mock server
-import axios from "axios";
-
-// import { useUsersStore } from "./stores/user";
-
-// // get token
-// const usersStore = useUsersStore();
+// isAdmin的判断放在了router的beforeEach中
 
 const minHeight = ref(0);
 const navBarFixed = ref(false);
@@ -43,7 +37,7 @@ onMounted(() => {
   window.onresize = function () {
     minHeight.value = document.documentElement.clientHeight;
 
-    console.log("window resize");
+    // console.log("window resize");
   };
 });
 
@@ -56,16 +50,4 @@ function watchScroll() {
   //  当滚动超过 50 时，实现吸顶效果
   navBarFixed.value = scrollTop.value > 50;
 }
-
-// FIXME: 只是判断是否存在token
-// const isAdmin = ref(usersStore.token);
-
-// const isAdmin = true;
-
-onMounted(() => {
-  axios.get("/api/getUser").then((res) => {
-    console.log("getUser...............");
-    console.log(res);
-  });
-});
 </script>

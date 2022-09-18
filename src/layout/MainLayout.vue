@@ -19,8 +19,8 @@ const usersStore = useUsersStore();
 let isAdmin = ref(false);
 
 usersStore.$subscribe((mutation, state) => {
-  console.log("tracked!");
-  console.log(state.isAdmin);
+  // console.log("tracked!");
+  // console.log("state.isAdmin: " + state.isAdmin);
 
   isAdmin.value = state.isAdmin;
 });

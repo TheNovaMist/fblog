@@ -36,6 +36,9 @@ import Prism from "prismjs";
 // highlight code
 import "prismjs/components/prism-json";
 
+// svg-icon
+import SvgIcon from "@/components/SvgIcon/index.vue";
+
 VMdEditor.use(vuepressTheme, {
   Prism,
 });
@@ -46,6 +49,8 @@ const app = createApp(App);
 for (const iconName in ElementPlusIconsVue) {
   app.component(iconName, ElementPlusIconsVue[iconName]);
 }
+
+app.component(SvgIcon);
 
 app
   .use(ElementPlus)

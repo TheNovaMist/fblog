@@ -31,14 +31,14 @@ async function handleLogout() {
   await userStore
     .logout()
     .then(() => {
-      console.log("logout... \n store token:");
-      console.log(userStore.token);
+      // console.log("NavBar logout... \n store token:");
+      // console.log(userStore.token);
       window.sessionStorage.removeItem("token");
     })
     .catch((error) => {
       console.log(error);
     });
 
-  router.push("/admin/");
+  router.push("/login");
 }
 </script>

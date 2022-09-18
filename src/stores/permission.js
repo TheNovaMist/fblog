@@ -50,14 +50,10 @@ export const useRouteStore = defineStore("permission", {
         let accessedRoutes;
         if (roles.includes("admin")) {
           accessedRoutes = asyncRoutes || [];
-          console.log(" admin............");
         } else {
           accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
-
-          console.log("not admin............");
         }
 
-        console.log(accessedRoutes);
         this.SET_ROUTES(accessedRoutes);
         resolve(accessedRoutes);
       });
@@ -71,7 +67,6 @@ export const useRouteStore = defineStore("permission", {
       // this.routes = constantRoutes.concat(routes);
       // FIXME: just use constantRoutes
 
-      console.log(constantRoutes);
       this.routes = constantRoutes;
     },
   },

@@ -55,9 +55,9 @@ const settingsStore = useSettingsStore();
 const permission_routes = useRouteStore();
 
 onMounted(() => {
-  console.log("permission_routes generateRoutes");
+  // console.log("permission_routes generateRoutes");
   permission_routes.generateRoutes("ysama");
-  console.log(permission_routes.routes);
+  // console.log(permission_routes.routes);
 });
 
 const activeMenu = computed(() => {

@@ -141,9 +141,6 @@ onMounted(() => {
   } else if (loginForm.value.password === "") {
     password.value.focus();
   }
-
-  console.log("username");
-  console.log(username.value);
 });
 
 // methods

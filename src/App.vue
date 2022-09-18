@@ -15,8 +15,8 @@ const usersStore = useUsersStore();
 let toLogIn = ref(false);
 
 usersStore.$subscribe((mutation, state) => {
-  console.log("tracked!");
-  console.log("toLogin" + state.toLogin);
+  // console.log("tracked!");
+  // console.log("toLogin: " + state.toLogin);
 
   toLogIn.value = state.toLogin;
 });

@@ -1,14 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import BlogFrontHome from "@/pages/BlogFrontEnd.vue";
 import Home from "@/pages/Home.vue";
 import About from "@/pages/About.vue";
 import Archive from "@/pages/Archive.vue";
 import Article from "@/pages/Article.vue";
 
-import ArticleCreate from "@/views/article/create.vue";
-
 import { useUsersStore } from "@/stores/user";
-import { async } from "@kangc/v-md-editor";
 
 // FIXME: 静态路由
 
@@ -110,11 +106,6 @@ export const adminRoutes = [
     component: () => import("@/views/dashboard/index.vue"),
     meta: { title: "Dashboard", icon: "dashboard" },
   },
-  // {
-  //   path: ":path(.*)",
-  //   component: () => import("@/views/dashboard/index.vue"),
-  //   meta: { title: "test", icon: "dashboard" },
-  // },
   {
     path: "/admin/form",
     name: "Form",
@@ -227,13 +218,6 @@ const frontEndRoutes = [
 ];
 
 const constantRoutes = [
-  // {
-  //   path: "/admin/login",
-  //   name: "Login",
-  //   component: () => import("@/views/login/index.vue"),
-  //   hidden: true,
-  // },
-
   ...frontEndRoutes,
 
   // admin routes
@@ -273,38 +257,37 @@ export const router = createRouter({
   },
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach((to, from) => {
   const usersStore = useUsersStore();
   const userToken = window.sessionStorage.getItem("token");
 
   // 直接访问 /login
   if (to.path.startsWith("/login")) {
-    console.log("userToken: " + userToken);
+    // console.log("userToken: " + userToken);
 
     // 如果已经登录就跳转到后台
     if (userToken) {
       return { name: "Admin" };
     }
-    await usersStore.isLogin();
+    usersStore.isLogin();
   }
 
   if (to.path.startsWith("/admin")) {
-    await usersStore.toBlogEnd();
-    console.log("to blog back");
-    console.log(usersStore.isAdmin);
+    usersStore.toBlogEnd();
+    // console.log("to blog back");
+    // console.log("userStore.isAdmin: " + usersStore.isAdmin);
 
-    console.log("!userToken " + !userToken);
-    console.log("userToken: " + userToken);
+    // console.log("userToken: " + userToken);
 
     if (!userToken) {
       // 显示单页登录layout
-      await usersStore.isLogin();
+      usersStore.isLogin();
 
       return { name: "Login" };
     }
   } else {
-    await usersStore.toBlogFront();
-    console.log("to blog front");
-    console.log(usersStore.isAdmin);
+    usersStore.toBlogFront();
+    // console.log("to blog front");
+    // console.log("userStore.isAdmin: " + usersStore.isAdmin);
   }
 });
