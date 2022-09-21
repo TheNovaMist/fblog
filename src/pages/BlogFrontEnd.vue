@@ -9,7 +9,7 @@
           :xs="16"
           :md="16"
           :style="{ minHeight: minHeight + 'px' }"
-          class="bg-white"
+          class="bg-red-400"
         >
           <router-view />
         </el-col>

@@ -1,5 +1,5 @@
 <template>
-  <el-row class="bg-neutral-100 flex justify-center">
+  <el-row class="bg-neutral-100 flex justify-center h-full">
     <el-col :span="20" class="bg-white px-16">
       <div
         class="article-info bg-gradient-to-r from-emerald-300 to-teal-500 p-8 my-8 flex justify-around flex-col"
@@ -22,7 +22,7 @@
         </p>
       </div>
       <hr />
-      <div class="article-content">
+      <!-- <div class="article-content">
         <p>
           官方地址：
           <a href="https://swagger.io/" rel="nofollow" target="_blank"
@@ -128,7 +128,16 @@
             ></span
           >
         </p>
-      </div>
-    </el-col></el-row
-  >
+      </div> -->
+      <div class="markdown-content" v-html="markdownToHtml"></div> </el-col
+  ></el-row>
 </template>
+
+<script setup>
+import { marked } from "marked";
+import { ref, computed } from "vue";
+
+const markdown = ref("hello");
+
+const markdownToHtml = computed(() => marked(markdown.value));
+</script>
