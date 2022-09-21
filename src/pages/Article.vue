@@ -4,11 +4,13 @@
       <div
         class="article-info bg-gradient-to-r from-emerald-300 to-teal-500 p-8 my-8 flex justify-around flex-col"
       >
-        <h2 class="my-4"><strong>测试标题</strong></h2>
+        <h2 class="my-4">
+          <strong>{{ db_post.title }}</strong>
+        </h2>
         <div class="timeAndView my-4">
           <span class="article-time">
             <el-icon><Clock /></el-icon>
-            发表于：<span>2018-08-02</span>
+            发表于：<span>{{ db_post.createAt }}</span>
           </span>
           &nbsp;|&nbsp;
           <span class="article-views">
@@ -17,8 +19,7 @@
           </span>
         </div>
         <p class="abstract my-4">
-          前言：swagger2功能非常强大，用自己的一句话概括：它是一个构建强大的RESTful
-          API文档以及调试的框架。
+          {{ db_post.description }}
         </p>
       </div>
       <hr />
@@ -129,15 +130,85 @@
           >
         </p>
       </div> -->
-      <div class="markdown-content" v-html="markdownToHtml"></div> </el-col
+      <div
+        class="markdown-content"
+        style="white-space: pre-wrap"
+        v-html="markdownToHtml"
+      ></div> </el-col
   ></el-row>
 </template>
 
 <script setup>
 import { marked } from "marked";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
-const markdown = ref("hello");
+import { useRoute } from "vue-router";
 
-const markdownToHtml = computed(() => marked(markdown.value));
+import { db } from "@/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+import hljs from "highlight.js";
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  highlight: function (code, lang) {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    return hljs.highlight(code, { language }).value;
+  },
+  langPrefix: "hljs language-", // highlight.js css expects a top-level 'hljs' class.
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false,
+});
+
+// article info
+const db_post = ref({
+  title: "",
+  createAt: "",
+  description: "",
+  content: "",
+});
+
+// parse markdown
+const markdownToHtml = computed(() => marked(db_post.value.content));
+
+const route = useRoute();
+onMounted(async () => {
+  console.log("route.params.id", route.params.id);
+  let id = route.params.id;
+
+  // query to firebase
+  const q = query(collection(db, "test"), where("id", "==", parseInt(id))); // 需要对应类型
+
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    // console.log(doc.id, " => ", doc.data());
+
+    let { title, createAt, description, content } = doc.data();
+    db_post.value = {
+      title,
+      createAt,
+      description,
+      content: b64DecodeUnicode(content),
+    };
+  });
+
+  // console.log(db_post.value.content);
+});
+
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(
+    atob(str)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+}
 </script>
