@@ -139,7 +139,6 @@
 </template>
 
 <script setup>
-import { marked } from "marked";
 import { ref, computed, onMounted } from "vue";
 
 import { useRoute } from "vue-router";
@@ -147,23 +146,9 @@ import { useRoute } from "vue-router";
 import { db } from "@/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-import hljs from "highlight.js";
+import { marked } from "@/utils/marked";
 
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  highlight: function (code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    return hljs.highlight(code, { language }).value;
-  },
-  langPrefix: "hljs language-", // highlight.js css expects a top-level 'hljs' class.
-  pedantic: false,
-  gfm: true,
-  breaks: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false,
-  xhtml: false,
-});
+import { atob } from "@/utils/base64";
 
 // article info
 const db_post = ref({
@@ -194,21 +179,8 @@ onMounted(async () => {
       title,
       createAt,
       description,
-      content: b64DecodeUnicode(content),
+      content: atob(content),
     };
   });
-
-  // console.log(db_post.value.content);
 });
-
-function b64DecodeUnicode(str) {
-  return decodeURIComponent(
-    atob(str)
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-}
 </script>
