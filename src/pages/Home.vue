@@ -2,9 +2,13 @@
   <div class="home pt-8">
     <el-row class="justify-around">
       <el-col :span="16">
-        <el-row v-for="n in 5" :key="n" class="post-item mb-8">
+        <el-row v-for="card in cards" :key="card.id" class="post-item mb-8">
           <el-card shadow="always">
-            <h5><router-link to="/post/1">测试标题</router-link></h5>
+            <h5>
+              <router-link :to="'/post/' + card.id">{{
+                card.title
+              }}</router-link>
+            </h5>
             <el-row class="post-info">
               <div class="create-time">2019-09-01</div>
               <el-tag>swagger</el-tag>
@@ -15,14 +19,9 @@
               </div>
               <div class="side-abstract">
                 <div class="post-abstract">
-                  Iconfont-国内功能很强大且图标内容很丰富的矢量图标库,
-                  提供矢量图标下载、在快照
-                  在小程序中使用阿里文字图标在小程序中使用阿里文字图标库前在小程序中使用阿里文字图标库前库前端开发的便捷工具
-                  - AndrewNeo - CSDN博客 著作权归作者所有。
-                  商业转载请联系作者获得授权，非商业转载请注明出处。
-                  作者：it疯子也 来源：https://www.fengziy.cn
+                  {{ card.description }}
                 </div>
-                <router-link to="/post/1">
+                <router-link :to="'/post/' + card.id">
                   <el-button>查看全文</el-button>
                 </router-link>
               </div>
@@ -41,4 +40,28 @@
 <script setup>
 import Tag from "@/components/tag.vue";
 import Friend from "../components/friend.vue";
+
+import { db } from "@/firebase";
+
+import { collection, onSnapshot } from "firebase/firestore";
+import { onMounted, ref } from "vue";
+
+const cards = ref([]);
+
+onMounted(() => {
+  onSnapshot(collection(db, "test"), (querySnapshot) => {
+    let db_cards = [];
+    querySnapshot.forEach((doc) => {
+      // console.log(doc.id, " => ", doc.data());
+      const card = {
+        id: doc.data().id,
+        title: doc.data().title,
+        description: doc.data().description,
+      };
+      db_cards.push(card);
+    });
+
+    cards.value = db_cards;
+  });
+});
 </script>
