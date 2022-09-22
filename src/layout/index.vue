@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-neutral-100 flex flex-auto">
+  <div class="bg-neutral-100 flex flex-auto h-full">
     <el-container>
       <el-aside width="200px" class="bg-sky-500">
         <sidebar />
