@@ -15,7 +15,7 @@
       </el-col>
       <el-col :span="20" :md="12">
         <div class="side-abstract">
-          <div class="post-abstract">
+          <div class="post-abstract" style="color: #aaaaaa; font-size: 1.2em">
             {{ card.description }}
           </div>
           <router-link :to="'/post/' + card.id">
