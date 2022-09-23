@@ -39,7 +39,7 @@
 
         <el-row>
           <el-col :span="10">
-            <el-form-item label="Publish Time:">
+            <el-form-item label="Publish Time:" prop="display_time">
               <el-date-picker
                 v-model="displayTime"
                 type="datetime"
@@ -50,7 +50,11 @@
           </el-col>
         </el-row>
 
-        <el-form-item style="margin-bottom: 40px" label="Summary:">
+        <el-form-item
+          style="margin-bottom: 40px"
+          label="Summary:"
+          prop="content_short"
+        >
           <el-input
             v-model="postForm.content_short"
             :rows="1"
@@ -86,6 +90,9 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 import { ElNotification as Notify } from "element-plus";
+
+import { createPost } from "@/api/article";
+import { async } from "@firebase/util";
 
 // props
 const props = defineProps({ isEdit: { type: Boolean, default: false } });
@@ -140,10 +147,13 @@ const postForm = ref(defaultForm.value);
 const loading = ref(false);
 const userListOptions = ref([]);
 const rules = ref({
-  image_uri: [{ validator: validateRequire }],
+  // image_uri: [{ validator: validateRequire }],
   title: [{ validator: validateRequire }],
+  content_short: [{ validator: validateRequire }],
   content: [{ validator: validateRequire }],
-  source_uri: [{ validator: validateSourceUri, trigger: "blur" }],
+  displayTime: [{ validator: validateRequire }],
+
+  // source_uri: [{ validator: validateSourceUri, trigger: "blur" }],
 });
 const tempRoute = ref({});
 
@@ -211,10 +221,20 @@ function setPageTitle() {
   document.title = `${title} - ${postForm.value.id}`;
 }
 
-function submitForm() {
-  console.log(postForm.value);
+const timestamp = computed(() => {
+  console.log("display_time", postForm.value.display_time);
 
-  postFormRef.value.validate((valid) => {
+  if (postForm.value.display_time == undefined) {
+    return new Date(Date.now()).toISOString();
+  }
+  return new Date(postForm.value.display_time).toISOString();
+});
+
+function submitForm() {
+  console.log("postForm.value", postForm.value);
+
+  postFormRef.value.validate(async (valid) => {
+    console.log("valid", valid);
     if (valid) {
       loading.value = true;
       Notify.success({
@@ -223,8 +243,24 @@ function submitForm() {
         duration: 2000,
       });
 
-      postForm.value.status = "published";
-      loading.value = false;
+      const data = {
+        content: postForm.value.content,
+        title: postForm.value.title,
+        description: postForm.value.content_short,
+        createAt: timestamp.value,
+      };
+
+      console.log("data", data);
+
+      // 调用 新建文章 api
+      await createPost(data)
+        .then(() => {
+          postForm.value.status = "published";
+          loading.value = false;
+        })
+        .catch((error) => {
+          console.log("submit failed", error);
+        });
     } else {
       console.log("error submit!!");
       return false;

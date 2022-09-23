@@ -68,3 +68,11 @@ export function getTagList() {
     method: "get",
   });
 }
+
+export function createPost(data) {
+  return request({
+    url: "/v2/api/post",
+    method: "post",
+    data,
+  });
+}

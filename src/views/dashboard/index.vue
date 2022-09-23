@@ -1,11 +1,11 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <TagList />
   </div>
 </template>
 
 <script setup>
-let name = "fblog";
+import TagList from "./TagList.vue";
 </script>
 
 <style lang="scss" scoped>

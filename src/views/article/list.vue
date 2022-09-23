@@ -16,20 +16,19 @@
 
       <el-table-column width="180px" align="center" label="Date">
         <template #default="scope">
-          <span>{{
-            parseTime(scope.row.timestamp, "{y}-{m}-{d} {h}:{i}")
-          }}</span>
+          <span>{{ scope.row.timestamp }}</span>
+          <!-- <span>{{ parseTime2(scope.row.timestamp) }}</span> -->
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110">
         <template #default="{ row }">
-          <el-tag :type="statusFilter(row.status)">
-            {{ row.status }}
+          <el-tag :type="statusFilter(row.status) || 'success'">
+            {{ row.status || "published" }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="300px" label="Title">
+      <el-table-column min-width="200px" label="Title">
         <template #default="{ row }">
           <router-link :to="'/post/' + row.id" class="link-type">
             <span>{{ row.title }}</span>
@@ -37,15 +36,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Actions" width="200px">
+      <el-table-column align="center" label="Actions" min-width="100px">
         <template #default="scope">
           <div class="flex justify-around">
             <router-link :to="'/admin/article/edit/' + scope.row.id">
-              <el-button type="primary" size="small" icon="edit" round="true">
+              <el-button type="primary" size="small" icon="edit" :round="true">
                 Edit
               </el-button>
             </router-link>
-            <el-button type="danger" round="true" size="small" icon="delete"
+            <el-button type="danger" :round="true" size="small" icon="delete"
               >Delete</el-button
             >
           </div>
@@ -64,10 +63,10 @@
 </template>
 
 <script setup>
-import { fetchList } from "@/api/article";
+import { fetchList, getPostList } from "@/api/article";
 import Pagination from "@/components/Pagination/index.vue"; // Secondary package based on el-pagination
 
-import { parseTime } from "@/utils";
+import { parseTime2 } from "@/utils";
 import { ref } from "vue";
 
 function statusFilter(status) {
@@ -87,17 +86,34 @@ let listQuery = ref({
   limit: 20,
 });
 
-function getList() {
+async function getList() {
   listLoading.value = true;
-  fetchList(listQuery.value)
-    .then((response) => {
-      list.value = response.data.items;
-      total.value = response.data.total;
-      listLoading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+
+  const data = await getPostList();
+  // console.log("post list", data, data.length);
+
+  // parse timestamp
+  for (let d in data) {
+    // console.log(data[d]);
+    data[d].timestamp = parseTime2(data[d].createAt);
+  }
+
+  // console.log(data);
+
+  list.value = data;
+  total.value = data.length;
+
+  listLoading.value = false;
+
+  // fetchList(listQuery.value)
+  //   .then((response) => {
+  //     list.value = response.data.items;
+  //     total.value = response.data.total;
+  //     listLoading.value = false;
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
 }
 
 // created()
