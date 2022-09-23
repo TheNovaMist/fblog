@@ -36,6 +36,21 @@
         </template>
       </el-table-column>
 
+      <el-table-column min-width="200px" label="Tag">
+        <template #default="{ row }">
+          <el-tag
+            v-for="tag in row.tag"
+            :key="tag"
+            :type="primary"
+            class="mr-4"
+          >
+            <router-link :to="'/tag/' + tag.slug" class="link-type"
+              >{{ tag.title }}
+            </router-link>
+          </el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="Actions" min-width="100px">
         <template #default="scope">
           <div class="flex justify-around">
@@ -103,6 +118,13 @@ async function getList() {
   for (let d in data) {
     // console.log(data[d]);
     data[d].timestamp = parseTime2(data[d].createAt);
+    data[d].tag =
+      Math.floor(Math.random() * 2) == 1
+        ? [
+            { id: 1, title: "生活", slug: "生活" },
+            { id: 3, title: "读书", slug: "读书" },
+          ]
+        : [{ id: 2, title: "科技", slug: "科技" }];
   }
 
   // console.log(data);
