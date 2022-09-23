@@ -48,9 +48,23 @@ export function getPostList(data) {
   });
 }
 
+export function getPostListByTag(tid) {
+  return request({
+    url: "/v2/api/tag/" + tid,
+    method: "get",
+  });
+}
+
 export function getPostById(id) {
   return request({
     url: "/v2/api/post/" + id,
+    method: "get",
+  });
+}
+
+export function getTagList() {
+  return request({
+    url: "/v2/api/tag",
     method: "get",
   });
 }

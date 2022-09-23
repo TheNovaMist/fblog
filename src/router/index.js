@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/pages/Home.vue";
 import About from "@/pages/About.vue";
 import Archive from "@/pages/Archive.vue";
+import ArchiveByTag from "@/pages/ArchiveByTag.vue";
 import Article from "@/pages/Article.vue";
 
 import { useUsersStore } from "@/stores/user";
@@ -207,7 +208,7 @@ const frontEndRoutes = [
   {
     path: "/tag/:id",
     name: "tag",
-    component: Archive,
+    component: ArchiveByTag,
     meta: { title: "Tab", icon: "tab" },
   },
   {

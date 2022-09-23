@@ -1,7 +1,6 @@
 <template>
-  <PostTimeLine :by-tag="false" />
+  <PostTimeLine :by-tag="true" />
 </template>
-
 <script setup>
 import PostTimeLine from "./PostTimeLine.vue";
 </script>
