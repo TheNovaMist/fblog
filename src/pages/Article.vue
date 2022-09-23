@@ -143,12 +143,13 @@ import { ref, computed, onMounted } from "vue";
 
 import { useRoute } from "vue-router";
 
-import { db } from "@/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { getPostById } from "../api/article";
 
 import { marked } from "@/utils/marked";
 
-import { atob } from "@/utils/base64";
+// import { atob } from "@/utils/base64";
+
+import { parseTime2 } from "../utils";
 
 // article info
 const db_post = ref({
@@ -166,21 +167,17 @@ onMounted(async () => {
   console.log("route.params.id", route.params.id);
   let id = route.params.id;
 
-  // query to firebase
-  const q = query(collection(db, "test"), where("id", "==", parseInt(id))); // 需要对应类型
+  const data = await getPostById(id);
 
-  const querySnapshot = await getDocs(q);
+  // console.log(data);
 
-  querySnapshot.forEach((doc) => {
-    // console.log(doc.id, " => ", doc.data());
-
-    let { title, createAt, description, content } = doc.data();
-    db_post.value = {
-      title,
-      createAt,
-      description,
-      content: atob(content),
-    };
-  });
+  let { title, createAt, updateAt, description, content } = data;
+  db_post.value = {
+    title,
+    createAt: parseTime2(createAt),
+    description,
+    // content: atob(content),
+    content,
+  };
 });
 </script>

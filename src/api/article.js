@@ -39,3 +39,18 @@ export function updateArticle(data) {
     data,
   });
 }
+
+export function getPostList(data) {
+  return request({
+    url: "/v2/api/post",
+    method: "get",
+    data,
+  });
+}
+
+export function getPostById(id) {
+  return request({
+    url: "/v2/api/post/" + id,
+    method: "get",
+  });
+}

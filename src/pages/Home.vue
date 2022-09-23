@@ -18,29 +18,16 @@ import Tag from "@/components/tag.vue";
 import Friend from "../components/friend.vue";
 import PostCard from "@/components/PostCard.vue";
 
-import { db } from "@/firebase";
-
 import { collection, onSnapshot } from "firebase/firestore";
 import { onMounted, ref } from "vue";
 
+import { getPostList } from "@/api/article";
+import { async } from "@firebase/util";
+
 const cards = ref([]);
 
-onMounted(() => {
-  onSnapshot(collection(db, "test"), (querySnapshot) => {
-    let db_cards = [];
-    querySnapshot.forEach((doc) => {
-      // console.log(doc.id, " => ", doc.data());
-      const card = {
-        id: doc.data().id,
-        title: doc.data().title,
-        description: doc.data().description,
-      };
-      db_cards.push(card);
-    });
-
-    cards.value = db_cards;
-
-    // console.log(cards.value);
-  });
+onMounted(async () => {
+  const data = await getPostList();
+  cards.value = data;
 });
 </script>
