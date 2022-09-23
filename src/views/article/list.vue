@@ -17,31 +17,13 @@
       <el-table-column width="180px" align="center" label="Date">
         <template #default="scope">
           <span>{{
-            scope.row.timestamp | parseTime("{y}-{m}-{d} {h}:{i}")
+            parseTime(scope.row.timestamp, "{y}-{m}-{d} {h}:{i}")
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column width="120px" align="center" label="Author">
-        <template #default="scope">
-          <span>{{ scope.row.author }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" label="Importance">
-        <template #default="scope">
-          <svg-icon
-            v-for="n in +scope.row.importance"
-            :key="n"
-            icon-class="star"
-            class="meta-item__icon"
-          />
-        </template>
-      </el-table-column>
-
       <el-table-column class-name="status-col" label="Status" width="110">
         <template #default="{ row }">
-          <el-tag :type="row.status | statusFilter">
+          <el-tag :type="statusFilter(row.status)">
             {{ row.status }}
           </el-tag>
         </template>
@@ -49,19 +31,24 @@
 
       <el-table-column min-width="300px" label="Title">
         <template #default="{ row }">
-          <router-link :to="'/example/edit/' + row.id" class="link-type">
+          <router-link :to="'/post/' + row.id" class="link-type">
             <span>{{ row.title }}</span>
           </router-link>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Actions" width="120">
+      <el-table-column align="center" label="Actions" width="200px">
         <template #default="scope">
-          <router-link :to="'/admin/article/edit/' + scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">
-              Edit
-            </el-button>
-          </router-link>
+          <div class="flex justify-around">
+            <router-link :to="'/admin/article/edit/' + scope.row.id">
+              <el-button type="primary" size="small" icon="edit" round="true">
+                Edit
+              </el-button>
+            </router-link>
+            <el-button type="danger" round="true" size="small" icon="delete"
+              >Delete</el-button
+            >
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -76,57 +63,45 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { fetchList } from "@/api/article";
 import Pagination from "@/components/Pagination/index.vue"; // Secondary package based on el-pagination
 
 import { parseTime } from "@/utils";
+import { ref } from "vue";
 
-export default {
-  name: "ArticleList",
-  components: { Pagination },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger",
-      };
-      return statusMap[status];
-    },
-  },
-  data() {
-    return {
-      list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-      },
-    };
-  },
-  created() {
-    this.getList();
-  },
-  methods: {
-    getList() {
-      this.listLoading = true;
-      fetchList(this.listQuery)
-        .then((response) => {
-          this.list = response.data.items;
-          this.total = response.data.total;
-          this.listLoading = false;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    parseTime(time, cFormat) {
-      return parseTime(time, cFormat);
-    },
-  },
-};
+function statusFilter(status) {
+  const statusMap = {
+    published: "success",
+    draft: "info",
+    deleted: "danger",
+  };
+  return statusMap[status];
+}
+
+let list = ref(null);
+let total = ref(0);
+let listLoading = ref(true);
+let listQuery = ref({
+  page: 1,
+  limit: 20,
+});
+
+function getList() {
+  listLoading.value = true;
+  fetchList(listQuery.value)
+    .then((response) => {
+      list.value = response.data.items;
+      total.value = response.data.total;
+      listLoading.value = false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+// created()
+getList();
 </script>
 
 <style scoped>
