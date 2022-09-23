@@ -143,7 +143,7 @@ const validateSourceUri = (rule, value, callback) => {
 const postFormRef = ref();
 
 // return data()
-const postForm = ref(defaultForm.value);
+let postForm = ref(defaultForm.value);
 const loading = ref(false);
 const userListOptions = ref([]);
 const rules = ref({
@@ -231,10 +231,10 @@ const timestamp = computed(() => {
 });
 
 function submitForm() {
-  console.log("postForm.value", postForm.value);
+  // console.log("postForm.value", postForm.value);
 
   postFormRef.value.validate(async (valid) => {
-    console.log("valid", valid);
+    // console.log("valid", valid);
     if (valid) {
       loading.value = true;
       Notify.success({
@@ -250,7 +250,7 @@ function submitForm() {
         createAt: timestamp.value,
       };
 
-      console.log("data", data);
+      // console.log("data", data);
 
       // 调用 新建文章 api
       await createPost(data)
@@ -261,6 +261,10 @@ function submitForm() {
         .catch((error) => {
           console.log("submit failed", error);
         });
+
+      // 重置表单
+      postFormRef.value.resetFields();
+      // console.log("pfv", postForm.value);
     } else {
       console.log("error submit!!");
       return false;

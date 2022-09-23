@@ -76,3 +76,10 @@ export function createPost(data) {
     data,
   });
 }
+
+export function deletePost(id) {
+  return request({
+    url: "/v2/api/post/" + id,
+    method: "delete",
+  });
+}

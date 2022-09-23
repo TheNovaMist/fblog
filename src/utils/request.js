@@ -19,7 +19,7 @@ service.interceptors.request.use(
   (config) => {
     // do something before request is sent
 
-    // config.headers["accept"] = "application/json";
+    config.headers["accept"] = "application/json";
 
     // console.log("method", config.method, config.data);
 

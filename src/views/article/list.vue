@@ -44,7 +44,12 @@
                 Edit
               </el-button>
             </router-link>
-            <el-button type="danger" :round="true" size="small" icon="delete"
+            <el-button
+              type="danger"
+              :round="true"
+              size="small"
+              icon="delete"
+              @click="handleDelete(scope.row.id)"
               >Delete</el-button
             >
           </div>
@@ -63,7 +68,7 @@
 </template>
 
 <script setup>
-import { fetchList, getPostList } from "@/api/article";
+import { fetchList, getPostList, deletePost } from "@/api/article";
 import Pagination from "@/components/Pagination/index.vue"; // Secondary package based on el-pagination
 
 import { parseTime2 } from "@/utils";
@@ -87,6 +92,8 @@ let listQuery = ref({
 });
 
 async function getList() {
+  // console.log("get List........");
+
   listLoading.value = true;
 
   const data = await getPostList();
@@ -116,6 +123,22 @@ async function getList() {
   //   });
 }
 
+// 删除之前要确认
+
+async function handleDelete(id) {
+  console.log("delete id: ", id);
+
+  var protect_array = [1, 2, 3, 4, 5, 6];
+  if (protect_array.includes(id)) {
+    console.log("can't delete protect post...");
+  }
+
+  await deletePost(id);
+
+  getList();
+}
+
+// !!!!!!! DO NOT DELETE !!!!!!
 // created()
 getList();
 </script>
