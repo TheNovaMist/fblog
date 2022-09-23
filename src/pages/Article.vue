@@ -164,7 +164,7 @@ const markdownToHtml = computed(() => marked(db_post.value.content));
 
 const route = useRoute();
 onMounted(async () => {
-  console.log("route.params.id", route.params.id);
+  // console.log("route.params.id", route.params.id);
   let id = route.params.id;
 
   const data = await getPostById(id);

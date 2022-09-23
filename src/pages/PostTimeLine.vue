@@ -51,12 +51,12 @@ onMounted(async () => {
   let data;
 
   if (props.byTag) {
-    console.log("request post list by Tag");
+    // console.log("request post list by Tag");
 
-    console.log(route.params.id);
+    // console.log(route.params.id);
     data = await getPostListByTag(route.params.id);
   } else {
-    console.log("request all list");
+    // console.log("request all list");
     data = await getPostList();
   }
   // 测试拼接
