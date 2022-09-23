@@ -83,3 +83,11 @@ export function deletePost(id) {
     method: "delete",
   });
 }
+
+export function updatePost(id, data) {
+  return request({
+    url: "/v2/api/post/" + id,
+    method: "put",
+    data,
+  });
+}

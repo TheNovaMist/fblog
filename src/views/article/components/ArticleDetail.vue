@@ -69,7 +69,7 @@
         </el-form-item>
 
         <el-form-item prop="content" style="margin-bottom: 30px">
-          <v-md-editor v-model="postForm.content" height="400px"></v-md-editor>
+          <v-md-editor v-model="postForm.content" height="600px"></v-md-editor>
         </el-form-item>
 
         <!-- <el-form-item prop="image_uri" style="margin-bottom: 30px">
@@ -91,8 +91,9 @@ import { useRoute } from "vue-router";
 
 import { ElNotification as Notify } from "element-plus";
 
-import { createPost } from "@/api/article";
+import { createPost, getPostById, updatePost } from "@/api/article";
 import { async } from "@firebase/util";
+import { parseTime2 } from "../../../utils";
 
 // props
 const props = defineProps({ isEdit: { type: Boolean, default: false } });
@@ -178,6 +179,8 @@ const displayTime = computed({
 // created()
 if (props.isEdit) {
   const id = route.params && route.params.id;
+
+  console.log("id ", id);
   fetchData(id);
 }
 
@@ -188,24 +191,39 @@ tempRoute.value = Object.assign({}, route);
 
 // methods
 
-function fetchData(id) {
-  fetchArticle(id)
-    .then((response) => {
-      postForm.value = response.data;
+async function fetchData(id) {
+  await getPostById(id)
+    .then((data) => {
+      // console.log("res.data", data);
 
-      // just for test
-      postForm.value.title += `   Article Id:${postForm.value.id}`;
-      postForm.value.content_short += `   Article Id:${postForm.value.id}`;
-
-      // set tagsview title
-      setTagsViewTitle();
-
-      // set page title
-      setPageTitle();
+      postForm.value = {
+        title: data.title,
+        id: data.id,
+        content: data.content,
+        content_short: data.description,
+        display_time: parseTime2(data.createAt),
+      };
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      console.log(error);
     });
+  // fetchArticle(id)
+  //   .then((response) => {
+  //     postForm.value = response.data;
+
+  //     // just for test
+  //     postForm.value.title += `   Article Id:${postForm.value.id}`;
+  //     postForm.value.content_short += `   Article Id:${postForm.value.id}`;
+
+  //     // set tagsview title
+  //     setTagsViewTitle();
+
+  //     // set page title
+  //     setPageTitle();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 }
 
 function setTagsViewTitle() {
@@ -251,6 +269,24 @@ function submitForm() {
       };
 
       // console.log("data", data);
+
+      if (props.isEdit == true) {
+        // 修改文章 api
+
+        await updatePost(route.params.id, data)
+          .then(() => {
+            postForm.value.status = "published";
+            loading.value = false;
+          })
+          .catch((error) => {
+            console.log("update post failed", error);
+          });
+        console.log("修改");
+
+        return true;
+      }
+
+      console.log("新建");
 
       // 调用 新建文章 api
       await createPost(data)
