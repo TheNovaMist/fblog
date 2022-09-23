@@ -13,7 +13,6 @@
           <img src="@/assets/side-img.jpg" alt="vue.svg" />
         </div>
       </el-col>
-      <!-- <el-col :span="2"></el-col> -->
       <el-col :span="20" :md="12">
         <div class="side-abstract">
           <div class="post-abstract">
