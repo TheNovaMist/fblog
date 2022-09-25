@@ -81,19 +81,12 @@
     <transition name="bounce" mode="out-in">
       <tag-list-window
         v-if="showTagList"
-        :tag-list="tagList"
         @close="closeModal"
         @show-add-tag="showAddTagWindow"
-        @fetch-tag-list="fetchTagList"
       />
     </transition>
     <transition>
-      <add-tag-window
-        v-if="showAddTag"
-        @close="showAddTag = false"
-        @create="fetchTagList"
-        @fetch-tag-list="fetchTagList"
-      />
+      <add-tag-window v-if="showAddTag" @close="showAddTag = false" />
     </transition>
 
     <pagination
@@ -112,9 +105,10 @@ import Pagination from "@/components/Pagination/index.vue"; // Secondary package
 
 import { parseTime2 } from "@/utils";
 import { onMounted, ref } from "vue";
-import { getTagList } from "../../api/article";
 import AddTagWindow from "./components/AddTagWindow.vue";
 import TagListWindow from "./components/TagListWindow.vue";
+
+import TagStore from "@/stores/TagStore";
 
 // 1. 数据
 
@@ -124,7 +118,6 @@ let color = "#409EFC";
 
 // tag manage
 const showTagList = ref(false);
-const tagList = ref({});
 let list = ref(null);
 let total = ref(0);
 let listLoading = ref(true);
@@ -134,15 +127,17 @@ let listQuery = ref({
 });
 const showAddTag = ref(false);
 
+const tagStore = TagStore();
+
 // 2. 初始化组件
 
 // created()
 // 请求文章和标签列表
-onMounted(() => {
+onMounted(async () => {
   getList();
-  fetchTagList();
+  await tagStore.updateTagList();
 
-  console.log("tagList", tagList.value);
+  console.log("update tagList", tagStore.tagList);
 });
 
 // 3. 方法
@@ -194,24 +189,6 @@ async function handleDelete(id) {
 
   // 重新获取文章列表
   getList();
-}
-
-/**
- * 获取标签列表
- * 使用时机：
- * - onMounted
- * - 新建标签后回调
- */
-async function fetchTagList() {
-  console.log("fetchTagList");
-  await getTagList()
-    .then((data) => {
-      tagList.value = data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  console.log("tag list: ", tagList.value);
 }
 
 /**

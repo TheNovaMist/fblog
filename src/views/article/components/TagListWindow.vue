@@ -13,29 +13,26 @@
         }}</el-button>
       </div>
     </div>
-    <!-- <ul class="cursor-pointer border-t border-gray-100 text-center">
-      <li
-        v-for="tag in props.tagList"
-        :key="tag.id"
-        class="border-b text-blue-500 border-gray-100 w-full px-6 py-3 hover:bg-gray-100 flex justify-between"
-      >
-        <div>{{ tag.title }}</div>
-
-        <el-button @click="deleteTag(tag.slug)">删除</el-button>
-      </li>
-    </ul> -->
 
     <el-checkbox-group
       v-model="checkListAll"
       :check-list-all="checkList"
       class="flex flex-col"
     >
-      <div v-for="c in checkList" :key="c">
-        <el-checkbox :label="c" />
-
-        <div class="float-right mr-8">
-          <el-button v-show="isDelMode" @click="deleteTag(c)">删除</el-button>
-        </div>
+      <div v-for="c in checkList" :key="c" class="mb-4">
+        <el-row>
+          <el-col :span="8">
+            <div class="ml-8">
+              <el-checkbox :label="c" /></div
+          ></el-col>
+          <el-col :span="8" :offset="8">
+            <div class="float-right mr-8">
+              <el-button v-show="isDelMode" @click="deleteTag(c)"
+                >删除</el-button
+              >
+            </div>
+          </el-col>
+        </el-row>
       </div>
     </el-checkbox-group>
     <div>{{ checkListAll }}</div>
@@ -52,26 +49,31 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 
 import TagStore from "@/stores/TagStore";
 
 const tagStore = TagStore();
 
-// 传入的的参数 动态
-const props = defineProps(["tagList"]);
-// const tagList = ref(props.tagList);
+// store改变则更新内部状态
+tagStore.$subscribe((mutation, state) => {
+  tagList.value = state.tagList;
+  checkList.value = tagList.value.map((t) => t.slug);
+  checkListAll.value = checkList.value;
+});
+
+const tagList = ref(tagStore.tagList);
 
 // 添加标签的时候也会更新
-const checkList = ref(props.tagList.map((t) => t.slug));
+const checkList = ref(tagList.value.map((t) => t.slug));
 
 const checkListAll = ref(checkList.value);
 
-const emit = defineEmits(["close", "showAddTag", "fetchTagList"]);
-
-const isDelMode = ref(false);
+const emit = defineEmits(["close", "showAddTag"]);
 
 // 控制组件显示
+const isDelMode = ref(false);
+
 const showAddTag = computed(() => {
   return !isDelMode.value;
 });
@@ -88,6 +90,14 @@ function closeModal() {
 }
 
 /**
+ * 打开新建标签的窗口
+ *
+ */
+function handleAddTag() {
+  emit("showAddTag");
+}
+
+/**
  * 删除标签模式
  */
 function delMode() {
@@ -101,19 +111,6 @@ function delMode() {
  */
 function deleteTag(title) {
   console.log("delet tag: ", title);
-  tagStore.deleteTag(title);
-
-  emit("fetchTagList");
+  tagStore.removeTag(title);
 }
-
-/**
- * 打开新建标签的窗口
- *
- */
-function handleAddTag() {
-  console.log("open add tag window...");
-  emit("showAddTag");
-}
-
-onMounted(() => {});
 </script>

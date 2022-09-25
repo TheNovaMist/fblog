@@ -30,7 +30,7 @@ const form = ref({
   slug: "",
 });
 
-const emit = defineEmits(["close", "create", "fetchTagList"]);
+const emit = defineEmits(["close"]);
 
 /**
  * 处理关闭窗口的方法
@@ -41,12 +41,12 @@ function handleClose() {
 
 /**
  * 处理创建标签的方法
- * 最后要回调外层 重新请求标签列表
+ * 最后要更新 store 内部标签列表
  */
 function handleCreate() {
   console.log("create tag ", form.value);
   tagStore.addTag(form.value);
-  emit("create");
-  emit("fetchTagList");
+
+  tagStore.updateTagList();
 }
 </script>

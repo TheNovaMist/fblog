@@ -33,7 +33,7 @@ export default defineStore("tagStore", () => {
   }
 
   async function removeTag(slug) {
-    await deleteTag(slug)
+    await deleteTag({ slug: slug })
       .then(() => {
         // 更新标签列表
         updateTagList();
