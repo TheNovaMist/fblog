@@ -7,11 +7,13 @@
       <div></div>
       <h3 class="text-xl mb-2 font-semibold">Tag List</h3>
       <div>
-        <el-button @click="closeModal">Close</el-button>
-        <el-button @click="showAddTag">New</el-button>
+        <el-button v-if="showAddTag" @click="handleAddTag">New</el-button>
+        <el-button @click="delMode">{{
+          !isDelMode ? "删除" : "取消删除"
+        }}</el-button>
       </div>
     </div>
-    <ul class="cursor-pointer border-t border-gray-100 text-center">
+    <!-- <ul class="cursor-pointer border-t border-gray-100 text-center">
       <li
         v-for="tag in props.tagList"
         :key="tag.id"
@@ -21,23 +23,62 @@
 
         <el-button @click="deleteTag(tag.slug)">删除</el-button>
       </li>
-    </ul>
+    </ul> -->
+
+    <el-checkbox-group
+      v-model="checkListAll"
+      :check-list-all="checkList"
+      class="flex flex-col"
+    >
+      <div v-for="c in checkList" :key="c">
+        <el-checkbox :label="c" />
+
+        <div class="float-right mr-8">
+          <el-button v-show="isDelMode" @click="deleteTag(c)">删除</el-button>
+        </div>
+      </div>
+    </el-checkbox-group>
+    <div>{{ checkListAll }}</div>
     <div class="m-4 flex justify-center">
-      <el-button type="primary" class="w-28">确认</el-button>
+      <el-button
+        v-if="showSubmitBtn"
+        type="primary"
+        class="w-28"
+        @click="closeModal"
+        >确认</el-button
+      >
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import TagStore from "@/stores/TagStore";
 
 const tagStore = TagStore();
 
+// 传入的的参数 动态
 const props = defineProps(["tagList"]);
+// const tagList = ref(props.tagList);
+
+// 添加标签的时候也会更新
+const checkList = ref(props.tagList.map((t) => t.slug));
+
+const checkListAll = ref(checkList.value);
 
 const emit = defineEmits(["close", "showAddTag", "fetchTagList"]);
+
+const isDelMode = ref(false);
+
+// 控制组件显示
+const showAddTag = computed(() => {
+  return !isDelMode.value;
+});
+
+const showSubmitBtn = computed(() => {
+  return !isDelMode.value;
+});
 
 /**
  * 处理关闭窗口事件
@@ -47,10 +88,19 @@ function closeModal() {
 }
 
 /**
+ * 删除标签模式
+ */
+function delMode() {
+  console.log("del mode...");
+  isDelMode.value = !isDelMode.value;
+}
+
+/**
  * 处理删除标签时事件
  * 使用全局状态管理 tagStore
  */
 function deleteTag(title) {
+  console.log("delet tag: ", title);
   tagStore.deleteTag(title);
 
   emit("fetchTagList");
@@ -60,7 +110,7 @@ function deleteTag(title) {
  * 打开新建标签的窗口
  *
  */
-function showAddTag() {
+function handleAddTag() {
   console.log("open add tag window...");
   emit("showAddTag");
 }
