@@ -38,16 +38,22 @@
 
       <el-table-column min-width="200px" label="Tag">
         <template #default="{ row }">
-          <el-tag
-            v-for="tag in row.tag"
-            :key="tag"
-            :type="primary"
-            class="mr-4"
-          >
-            <router-link :to="'/tag/' + tag.slug" class="link-type"
-              >{{ tag.title }}
-            </router-link>
-          </el-tag>
+          <div class="flex justify-between">
+            <div>
+              <el-tag v-for="tag in row.tag" :key="tag" class="mr-4">
+                <router-link :to="'/tag/' + tag.slug" class="link-type"
+                  >{{ tag.title }}
+                </router-link>
+              </el-tag>
+            </div>
+            <div>
+              <el-button @click="showTagList = true">
+                <el-icon :size="size" :color="color">
+                  <Setting />
+                </el-icon>
+              </el-button>
+            </div>
+          </div>
         </template>
       </el-table-column>
 
@@ -72,6 +78,24 @@
       </el-table-column>
     </el-table>
 
+    <transition name="bounce" mode="out-in">
+      <tag-list-window
+        v-if="showTagList"
+        :tag-list="tagList"
+        @close="closeModal"
+        @show-add-tag="showAddTagWindow"
+        @fetch-tag-list="fetchTagList"
+      />
+    </transition>
+    <transition>
+      <add-tag-window
+        v-if="showAddTag"
+        @close="showAddTag = false"
+        @create="fetchTagList"
+        @fetch-tag-list="fetchTagList"
+      />
+    </transition>
+
     <pagination
       v-show="total > 0"
       v-model:page="listQuery.page"
@@ -83,12 +107,50 @@
 </template>
 
 <script setup>
-import { fetchList, getPostList, deletePost } from "@/api/article";
+import { getPostList, deletePost } from "@/api/article";
 import Pagination from "@/components/Pagination/index.vue"; // Secondary package based on el-pagination
 
 import { parseTime2 } from "@/utils";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { getTagList } from "../../api/article";
+import AddTagWindow from "./components/AddTagWindow.vue";
+import TagListWindow from "./components/TagListWindow.vue";
 
+// 1. 数据
+
+// icon
+let size = 18;
+let color = "#409EFC";
+
+// tag manage
+const showTagList = ref(false);
+const tagList = ref({});
+let list = ref(null);
+let total = ref(0);
+let listLoading = ref(true);
+let listQuery = ref({
+  page: 1,
+  limit: 20,
+});
+const showAddTag = ref(false);
+
+// 2. 初始化组件
+
+// created()
+// 请求文章和标签列表
+onMounted(() => {
+  getList();
+  fetchTagList();
+
+  console.log("tagList", tagList.value);
+});
+
+// 3. 方法
+
+/**
+ * 设置状态栏的状态
+ * 当前全部默认为 published
+ */
 function statusFilter(status) {
   const statusMap = {
     published: "success",
@@ -98,58 +160,31 @@ function statusFilter(status) {
   return statusMap[status];
 }
 
-let list = ref(null);
-let total = ref(0);
-let listLoading = ref(true);
-let listQuery = ref({
-  page: 1,
-  limit: 20,
-});
-
-async function getList() {
-  // console.log("get List........");
-
-  listLoading.value = true;
-
-  const data = await getPostList();
-  // console.log("post list", data, data.length);
-
-  // parse timestamp
-  for (let d in data) {
-    // console.log(data[d]);
-    data[d].timestamp = parseTime2(data[d].createAt);
-    data[d].tag =
-      Math.floor(Math.random() * 2) == 1
-        ? [
-            { id: 1, title: "生活", slug: "生活" },
-            { id: 3, title: "读书", slug: "读书" },
-          ]
-        : [{ id: 2, title: "科技", slug: "科技" }];
-  }
-
-  // console.log(data);
-
-  list.value = data;
-  total.value = data.length;
-
-  listLoading.value = false;
-
-  // fetchList(listQuery.value)
-  //   .then((response) => {
-  //     list.value = response.data.items;
-  //     total.value = response.data.total;
-  //     listLoading.value = false;
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
+/**
+ * 处理新建标签事件
+ * 显示新增标签的窗口
+ */
+function showAddTagWindow() {
+  console.log("open add tag window");
+  showAddTag.value = true;
 }
 
-// 删除之前要确认
+/**
+ * 关闭设置文章标签的窗口
+ */
+function closeModal() {
+  console.log("close action.");
+  showTagList.value = false;
+}
 
+/**
+ * 删除文章
+ * TODO: 删除之前需要确认
+ */
 async function handleDelete(id) {
   console.log("delete id: ", id);
 
+  // 不删除测试数据
   var protect_array = [1, 2, 3, 4, 5, 6];
   if (protect_array.includes(id)) {
     console.log("can't delete protect post...");
@@ -157,12 +192,50 @@ async function handleDelete(id) {
 
   await deletePost(id);
 
+  // 重新获取文章列表
   getList();
 }
 
-// !!!!!!! DO NOT DELETE !!!!!!
-// created()
-getList();
+/**
+ * 获取标签列表
+ * 使用时机：
+ * - onMounted
+ * - 新建标签后回调
+ */
+async function fetchTagList() {
+  console.log("fetchTagList");
+  await getTagList()
+    .then((data) => {
+      tagList.value = data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  console.log("tag list: ", tagList.value);
+}
+
+/**
+ * 请求文章列表
+ * 处理数据中的 datetime
+ * 使用时机：
+ * - onMounted
+ * - 删除文章后
+ */
+async function getList() {
+  listLoading.value = true;
+
+  const data = await getPostList();
+
+  // parse timestamp
+  for (let d in data) {
+    data[d].timestamp = parseTime2(data[d].createAt);
+  }
+
+  list.value = data;
+  total.value = data.length;
+
+  listLoading.value = false;
+}
 </script>
 
 <style scoped>
@@ -174,4 +247,26 @@ getList();
   right: 15px;
   top: 10px;
 }
+</style>
+
+<style scoped>
+/* .bounce-enter-active {
+  animation: bounce-in 0.5s ease-out both;
+}
+
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse ease-in both;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+} */
 </style>
