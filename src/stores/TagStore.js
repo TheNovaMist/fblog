@@ -1,9 +1,7 @@
-import axios from "axios";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import { getTagList } from "@/api/tag";
-import { createTag } from "../api/tag";
+import { getTagList, createTag, deleteTag } from "@/api/tag";
 
 // setup版本
 export default defineStore("tagStore", () => {
@@ -34,7 +32,7 @@ export default defineStore("tagStore", () => {
       });
   }
 
-  async function deleteTag(slug) {
+  async function removeTag(slug) {
     await deleteTag(slug)
       .then(() => {
         // 更新标签列表
@@ -44,5 +42,5 @@ export default defineStore("tagStore", () => {
         console.log(error);
       });
   }
-  return { tagList, getTagList, addTag, deleteTag, updateTagList };
+  return { tagList, getTagList, addTag, removeTag, updateTagList };
 });
