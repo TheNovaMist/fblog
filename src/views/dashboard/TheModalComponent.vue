@@ -12,7 +12,7 @@
       </div>
       <ul class="cursor-pointer border-t border-gray-100 text-center">
         <li
-          v-for="tag in store.getTagList"
+          v-for="tag in store.tagList"
           :key="tag.id"
           class="border-b text-blue-500 border-gray-100 w-full px-6 py-3 hover:bg-gray-100 flex justify-between"
         >
@@ -49,7 +49,7 @@ function hide() {
 
 function addTag() {
   // 需要检测列表中有无
-  if (store.getTagList.find((element) => element.title == newTag.value)) {
+  if (store.tagList.find((element) => element.title == newTag.value)) {
     console.log("检测到重复");
     return;
   }
@@ -62,7 +62,7 @@ function addTag() {
 }
 
 function deleteTag(title) {
-  store.deleteTag(title);
+  store.removeTag(title);
 }
 </script>
 

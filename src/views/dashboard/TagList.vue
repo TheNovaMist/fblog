@@ -3,7 +3,7 @@
     <el-col :span="18">
       <el-card>
         <div class="tag-box">
-          <div v-for="tag in store.getTagList" :key="tag.id" class="tag">
+          <div v-for="tag in store.tagList" :key="tag.id" class="tag">
             <router-link :to="'/tag/' + tag.slug" class="tag-title">
               {{ tag.title }}
             </router-link>
@@ -37,7 +37,7 @@ function closeModal() {
 
 const store = TagStore();
 onMounted(() => {
-  store.fetchTagList();
+  store.updateTagList();
 });
 
 // function addTag() {

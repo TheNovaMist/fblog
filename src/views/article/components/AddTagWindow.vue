@@ -43,10 +43,10 @@ function handleClose() {
  * 处理创建标签的方法
  * 最后要更新 store 内部标签列表
  */
-function handleCreate() {
+async function handleCreate() {
   console.log("create tag ", form.value);
-  tagStore.addTag(form.value);
+  await tagStore.addTag(form.value);
 
-  tagStore.updateTagList();
+  await tagStore.updateTagList();
 }
 </script>

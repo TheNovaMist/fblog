@@ -78,7 +78,7 @@ const checkListAll = ref(tagList.value.map((t) => t.slug));
 
 const checkList = ref(tagStore.postTags);
 
-const emit = defineEmits(["close", "showAddTag"]);
+const emit = defineEmits(["close", "showAddTag", "updatePostTag"]);
 
 // 控制组件显示
 const isDelMode = ref(false);
@@ -130,8 +130,13 @@ function deleteTag(title) {
 /**
  * 处理更新标签事件
  */
-function handleSubmit() {
-  //TODO: updatePostTags
+async function handleSubmit() {
+  console.log("checkList: ", checkList.value);
+  await tagStore.setPostTags(checkList.value);
+
+  // 表格中文章的标签是 getPostList 一起请求过来的
+  // 未使用全局状态 只能进行回调
+  emit("updatePostTag");
   // close window
   closeModal();
 }

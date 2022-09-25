@@ -83,6 +83,7 @@
         v-if="showTagList"
         @close="closeModal"
         @show-add-tag="showAddTagWindow"
+        @update-post-tag="getList"
       />
     </transition>
     <transition>
@@ -201,6 +202,8 @@ async function handleDelete(id) {
  * - 删除文章后
  */
 async function getList() {
+  console.log("get List xxxxxxxxx");
+
   listLoading.value = true;
 
   const data = await getPostList();

@@ -29,3 +29,13 @@ export function getPostTags(data) {
     data,
   });
 }
+
+export function updatePostTags(data) {
+  console.log("xxxxxxx", data);
+
+  return request({
+    url: "/v2/api/updatePostTags",
+    method: "post",
+    data,
+  });
+}
