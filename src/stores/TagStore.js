@@ -2,10 +2,14 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import { getTagList, createTag, deleteTag } from "@/api/tag";
+import { getPostTags } from "../api/tag";
 
 // setup版本
 export default defineStore("tagStore", () => {
   const tagList = ref([]);
+
+  const postId = ref();
+  const postTags = ref([]);
 
   /**
    * 更新标签列表
@@ -42,5 +46,31 @@ export default defineStore("tagStore", () => {
         console.log(error);
       });
   }
-  return { tagList, getTagList, addTag, removeTag, updateTagList };
+
+  /**
+   * 更新当前文章标签
+   */
+  async function usePost(id) {
+    postId.value = id;
+
+    await getPostTags({ id: id })
+      .then((data) => {
+        postTags.value = data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    console.log("update Post, id: ", id, "postTags: ", postTags.value);
+  }
+  return {
+    tagList,
+    getTagList,
+    postTags,
+    postId,
+    addTag,
+    usePost,
+    removeTag,
+    updateTagList,
+  };
 });

@@ -15,11 +15,11 @@
     </div>
 
     <el-checkbox-group
-      v-model="checkListAll"
-      :check-list-all="checkList"
+      v-model="checkList"
+      :check-list-all="checkListAll"
       class="flex flex-col"
     >
-      <div v-for="c in checkList" :key="c" class="mb-4">
+      <div v-for="c in checkListAll" :key="c" class="mb-4">
         <el-row>
           <el-col :span="8">
             <div class="ml-8">
@@ -35,14 +35,22 @@
         </el-row>
       </div>
     </el-checkbox-group>
-    <div>{{ checkListAll }}</div>
+    <div>{{ checkList }}</div>
     <div class="m-4 flex justify-center">
       <el-button
         v-if="showSubmitBtn"
         type="primary"
         class="w-28"
-        @click="closeModal"
+        @click="handleSubmit"
         >确认</el-button
+      >
+
+      <el-button
+        v-if="showCloseBtn"
+        type="primary"
+        class="w-28"
+        @click="closeModal"
+        >Close</el-button
       >
     </div>
   </div>
@@ -58,16 +66,17 @@ const tagStore = TagStore();
 // store改变则更新内部状态
 tagStore.$subscribe((mutation, state) => {
   tagList.value = state.tagList;
-  checkList.value = tagList.value.map((t) => t.slug);
-  checkListAll.value = checkList.value;
+  checkListAll.value = tagList.value.map((t) => t.slug);
+  console.log("postTags", state.postTags);
+  checkList.value = state.postTags.map((t) => t.slug);
 });
 
 const tagList = ref(tagStore.tagList);
 
 // 添加标签的时候也会更新
-const checkList = ref(tagList.value.map((t) => t.slug));
+const checkListAll = ref(tagList.value.map((t) => t.slug));
 
-const checkListAll = ref(checkList.value);
+const checkList = ref(tagStore.postTags);
 
 const emit = defineEmits(["close", "showAddTag"]);
 
@@ -79,6 +88,10 @@ const showAddTag = computed(() => {
 });
 
 const showSubmitBtn = computed(() => {
+  return !isDelMode.value;
+});
+
+const showCloseBtn = computed(() => {
   return !isDelMode.value;
 });
 
@@ -112,5 +125,14 @@ function delMode() {
 function deleteTag(title) {
   console.log("delet tag: ", title);
   tagStore.removeTag(title);
+}
+
+/**
+ * 处理更新标签事件
+ */
+function handleSubmit() {
+  //TODO: updatePostTags
+  // close window
+  closeModal();
 }
 </script>

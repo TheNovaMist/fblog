@@ -47,7 +47,7 @@
               </el-tag>
             </div>
             <div>
-              <el-button @click="showTagList = true">
+              <el-button @click="handleClickSetting(row.id)">
                 <el-icon :size="size" :color="color">
                   <Setting />
                 </el-icon>
@@ -128,6 +128,8 @@ let listQuery = ref({
 const showAddTag = ref(false);
 
 const tagStore = TagStore();
+
+const curPost = ref(1);
 
 // 2. 初始化组件
 
@@ -212,6 +214,17 @@ async function getList() {
   total.value = data.length;
 
   listLoading.value = false;
+}
+
+/**
+ * 打开标签管理界面
+ */
+async function handleClickSetting(id) {
+  showTagList.value = true;
+  curPost.value = id;
+  console.log("curPost ", curPost.value);
+
+  await tagStore.usePost(curPost.value);
 }
 </script>
 

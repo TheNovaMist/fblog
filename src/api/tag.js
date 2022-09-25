@@ -22,3 +22,10 @@ export function deleteTag(data) {
     data,
   });
 }
+export function getPostTags(data) {
+  return request({
+    url: "/v2/api/getPostTag",
+    method: "post",
+    data,
+  });
+}
