@@ -63,22 +63,25 @@ import TagStore from "@/stores/TagStore";
 
 const tagStore = TagStore();
 
+const tagList = ref(tagStore.tagList);
+
+// 用于渲染 el-checkbox 列表的全局标签数组，只需要标题的值
+// ["科技", "生活"]
+const checkListAll = ref(tagList.value.map((t) => t.slug));
+
+// el-checkbox-group 绑定的表单值，是单个文章的
+const checkList = ref(tagStore.postTags.map((t) => t.slug));
+
 // store改变则更新内部状态
 tagStore.$subscribe((mutation, state) => {
   tagList.value = state.tagList;
-  checkListAll.value = tagList.value.map((t) => t.slug);
-  console.log("postTags", state.postTags);
+  // 修改数据结构
+  checkListAll.value = state.tagList.map((t) => t.slug);
+  // console.log("postTags", state.postTags);
   checkList.value = state.postTags.map((t) => t.slug);
 });
 
-const tagList = ref(tagStore.tagList);
-
-// 添加标签的时候也会更新
-const checkListAll = ref(tagList.value.map((t) => t.slug));
-
-const checkList = ref(tagStore.postTags);
-
-const emit = defineEmits(["close", "showAddTag", "updatePostTag"]);
+const emit = defineEmits(["close", "showAddTag", "updatePostList"]);
 
 // 控制组件显示
 const isDelMode = ref(false);
@@ -136,7 +139,7 @@ async function handleSubmit() {
 
   // 表格中文章的标签是 getPostList 一起请求过来的
   // 未使用全局状态 只能进行回调
-  emit("updatePostTag");
+  emit("updatePostList");
   // close window
   closeModal();
 }

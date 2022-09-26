@@ -99,10 +99,10 @@ export default defineStore("tagStore", () => {
 
   return {
     tagList,
-    getTagList,
-    setPostTags,
     postTags,
     postId,
+
+    setPostTags,
     addTag,
     usePost,
     removeTag,

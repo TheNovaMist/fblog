@@ -83,7 +83,7 @@
         v-if="showTagList"
         @close="closeModal"
         @show-add-tag="showAddTagWindow"
-        @update-post-tag="getList"
+        @update-post-list="getList"
       />
     </transition>
     <transition>
