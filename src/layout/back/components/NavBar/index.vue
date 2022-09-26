@@ -28,8 +28,12 @@ function handleToHome() {
 async function handleLogout() {
   // console.log("userStore.token: ", userStore.token);
 
-  await userStore
-    .logout()
+  // await userStore.logout()
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Success!"); // Yay! Everything went well!
+    }, 250);
+  })
     .then(() => {
       window.sessionStorage.removeItem("token");
     })

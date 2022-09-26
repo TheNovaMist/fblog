@@ -169,13 +169,9 @@ function handleLogin() {
       // userStore.login(loginForm)
 
       new Promise((resolve, reject) => {
-        console.log(`
-          ****************************** NOTICE ******************************
-          *     This LOGIN page request mock server api,                     *
-          *     but the truely backend api HAS NOT implement LOGIN API yet.  * 
-          *     So the function of auth login has been disabled. :)          * 
-          ********************************************************************
-          `);
+        setTimeout(() => {
+          resolve("Success!"); // Yay! Everything went well!
+        }, 250);
       })
         .then(() => {
           window.sessionStorage.setItem("token", "res.token");
@@ -224,6 +220,15 @@ export default {
       },
       immediate: true,
     },
+  },
+  mounted() {
+    console.log(`
+******************** NOTICE ********************
+*This LOGIN page request mock server api,  
+*but the truely backend api HAS NOT implement LOGIN API yet.
+*So the function of auth login has been disabled. :)
+************************************************
+          `);
   },
 };
 </script>
