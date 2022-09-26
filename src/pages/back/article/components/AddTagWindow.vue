@@ -44,7 +44,7 @@ function handleClose() {
  * 最后要更新 store 内部标签列表
  */
 async function handleCreate() {
-  console.log("create tag ", form.value);
+  // console.log("create tag ", form.value);
   await tagStore.addTag(form.value);
 
   await tagStore.updateTagList();

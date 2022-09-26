@@ -31,7 +31,7 @@ export function getPostTags(data) {
 }
 
 export function updatePostTags(data) {
-  console.log("xxxxxxx", data);
+  // console.log("/api updatePostTags paramter: ", data);
 
   return request({
     url: "/v2/api/updatePostTags",

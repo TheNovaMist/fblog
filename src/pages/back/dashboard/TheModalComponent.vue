@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- <div class="h-full w-full fixed top-0 left-0 z-20" @click="hide"></div> -->
-    <!-- <div class="h-full w-full fixed top-0 left-0 z-20"></div> -->
     <div
       class="bg-white rounded-lg text-lg pt-6 shadow-lg w-96 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
     >
@@ -43,14 +41,14 @@ let newTag = ref("");
 const store = TagStore();
 
 function hide() {
-  console.log("click registered");
+  // console.log("click registered");
   emit("close");
 }
 
 function addTag() {
   // 需要检测列表中有无
   if (store.tagList.find((element) => element.title == newTag.value)) {
-    console.log("检测到重复");
+    // console.log("检测到重复");
     return;
   }
 

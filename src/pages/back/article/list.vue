@@ -140,7 +140,7 @@ onMounted(async () => {
   getList();
   await tagStore.updateTagList();
 
-  console.log("update tagList", tagStore.tagList);
+  // console.log("update tagList", tagStore.tagList);
 });
 
 // 3. 方法
@@ -163,7 +163,7 @@ function statusFilter(status) {
  * 显示新增标签的窗口
  */
 function showAddTagWindow() {
-  console.log("open add tag window");
+  // console.log("open add tag window");
   showAddTag.value = true;
 }
 
@@ -171,7 +171,7 @@ function showAddTagWindow() {
  * 关闭设置文章标签的窗口
  */
 function closeModal() {
-  console.log("close action.");
+  // console.log("close action.");
   showTagList.value = false;
 }
 
@@ -180,12 +180,12 @@ function closeModal() {
  * TODO: 删除之前需要确认
  */
 async function handleDelete(id) {
-  console.log("delete id: ", id);
+  // console.log("delete id: ", id);
 
   // 不删除测试数据
   var protect_array = [1, 2, 3, 4, 5, 6];
   if (protect_array.includes(id)) {
-    console.log("can't delete protect post...");
+    // console.log("can't delete protect post...");
   }
 
   await deletePost(id);
@@ -202,8 +202,6 @@ async function handleDelete(id) {
  * - 删除文章后
  */
 async function getList() {
-  console.log("get List xxxxxxxxx");
-
   listLoading.value = true;
 
   const data = await getPostList();
@@ -225,7 +223,7 @@ async function getList() {
 async function handleClickSetting(id) {
   showTagList.value = true;
   curPost.value = id;
-  console.log("curPost ", curPost.value);
+  // console.log("curPost ", curPost.value);
 
   await tagStore.usePost(curPost.value);
 }

@@ -26,13 +26,11 @@ function handleToHome() {
 }
 
 async function handleLogout() {
-  console.log(userStore.token);
+  // console.log("userStore.token: ", userStore.token);
 
   await userStore
     .logout()
     .then(() => {
-      // console.log("NavBar logout... \n store token:");
-      // console.log(userStore.token);
       window.sessionStorage.removeItem("token");
     })
     .catch((error) => {

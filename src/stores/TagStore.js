@@ -66,7 +66,7 @@ export default defineStore("tagStore", () => {
         console.log(error);
       });
 
-    console.log("update Post, id: ", id, "postTags: ", postTags.value);
+    // console.log("update Post, id: ", id, "postTags: ", postTags.value);
   }
 
   /**
@@ -85,7 +85,7 @@ export default defineStore("tagStore", () => {
       }),
     };
 
-    console.log("request data: ", data);
+    // console.log("request data: ", data);
 
     await updatePostTags(data)
       .then(async () => {

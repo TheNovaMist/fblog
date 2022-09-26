@@ -117,7 +117,7 @@ function handleAddTag() {
  * 删除标签模式
  */
 function delMode() {
-  console.log("del mode...");
+  // console.log("del mode...");
   isDelMode.value = !isDelMode.value;
 }
 
@@ -126,7 +126,7 @@ function delMode() {
  * 使用全局状态管理 tagStore
  */
 function deleteTag(title) {
-  console.log("delet tag: ", title);
+  // console.log("delet tag: ", title);
   tagStore.removeTag(title);
 }
 
@@ -134,7 +134,7 @@ function deleteTag(title) {
  * 处理更新标签事件
  */
 async function handleSubmit() {
-  console.log("checkList: ", checkList.value);
+  // console.log("checkList: ", checkList.value);
   await tagStore.setPostTags(checkList.value);
 
   // 表格中文章的标签是 getPostList 一起请求过来的

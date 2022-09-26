@@ -173,7 +173,7 @@ const displayTime = computed({
 if (props.isEdit) {
   const id = route.params && route.params.id;
 
-  console.log("id ", id);
+  // console.log("post_id: ", id);
   fetchData(id);
 }
 
@@ -216,8 +216,6 @@ function setPageTitle() {
 }
 
 const timestamp = computed(() => {
-  console.log("display_time", postForm.value.display_time);
-
   if (postForm.value.display_time == undefined) {
     return new Date(Date.now()).toISOString();
   }
@@ -228,7 +226,6 @@ function submitForm() {
   // console.log("postForm.value", postForm.value);
 
   postFormRef.value.validate(async (valid) => {
-    // console.log("valid", valid);
     if (valid) {
       loading.value = true;
       Notify.success({
@@ -257,12 +254,12 @@ function submitForm() {
           .catch((error) => {
             console.log("update post failed", error);
           });
-        console.log("修改");
+        // console.log("修改");
 
         return true;
       }
 
-      console.log("新建");
+      // console.log("新建");
 
       // 调用 新建文章 api
       await createPost(data)

@@ -164,15 +164,14 @@ function showPwd() {
 function handleLogin() {
   loginRef.value.validate((valid) => {
     if (valid) {
-      console.log("submit success!");
+      // console.log("submit success!");
 
       loading.value = true;
       userStore
         .login(loginForm)
         .then(() => {
-          console.log("then ....");
           window.sessionStorage.setItem("token", "res.token");
-          console.log(redirect.value || "/admin/");
+          // console.log(redirect.value || "/admin/");
           router.push({
             path: redirect.value || "/admin/",
             query: otherQuery.value,

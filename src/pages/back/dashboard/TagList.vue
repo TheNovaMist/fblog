@@ -8,8 +8,6 @@
               {{ tag.title }}
             </router-link>
           </div>
-          <!-- <el-button @click="addTag">增加</el-button>
-    <el-button @click="deleteTag('生活')">减少</el-button> -->
           <el-button @click="showModal = true">管理</el-button>
         </div>
       </el-card>
@@ -31,7 +29,7 @@ import { onMounted, ref } from "vue";
 let showModal = ref(false);
 
 function closeModal() {
-  console.log("close action.");
+  // console.log("close action.");
   showModal.value = false;
 }
 
@@ -39,27 +37,6 @@ const store = TagStore();
 onMounted(() => {
   store.updateTagList();
 });
-
-// function addTag() {
-//   const newTag = { id: 1, title: "生活", slug: "life" };
-//   store.addTag(newTag);
-// }
-
-// function deleteTag(name) {
-//   store.deleteTag(name);
-// }
-
-// const tagList = [
-//   { id: 1, title: "生活", slug: "life" },
-//   { id: 2, title: "读书", slug: "book" },
-//   { id: 3, title: "科技", slug: "itnews" },
-//   { id: 4, title: "历史", slug: "history" },
-//   { id: 5, title: "娱乐", slug: "entertainment" },
-//   //   { id: 6, title: "娱乐", slug: "entertainment" },
-//   //   { id: 7, title: "娱乐", slug: "entertainment" },
-//   //   { id: 8, title: "娱乐", slug: "entertainment" },
-//   //   { id: 9, title: "娱乐", slug: "entertainment" },
-// ];
 </script>
 
 <style scoped>
@@ -78,10 +55,8 @@ onMounted(() => {
 }
 .tag {
   flex-basis: 20%;
-  /* background-color: antiquewhite; */
 }
 .tag-title {
-  /* background-color: brown; */
   font-size: 1.5em;
 
   flex-basis: 50px;
