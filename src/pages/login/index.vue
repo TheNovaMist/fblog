@@ -45,9 +45,9 @@
             name="password"
             tabindex="2"
             autocomplete="off"
-            @keyup.native="checkCapslock"
+            @keyup="checkCapslock"
             @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
+            @keyup.enter="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
             show-pwd
@@ -62,7 +62,7 @@
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="handleLogin"
+        @click="handleLogin"
         >Login</el-button
       >
 
@@ -123,7 +123,6 @@ const passwordType = ref("password");
 
 const capsTooltip = ref(false);
 const loading = ref(false);
-const showDialog = ref(false);
 const redirect = ref();
 const otherQuery = ref({});
 
@@ -167,8 +166,17 @@ function handleLogin() {
       // console.log("submit success!");
 
       loading.value = true;
-      userStore
-        .login(loginForm)
+      // userStore.login(loginForm)
+
+      new Promise((resolve, reject) => {
+        console.log(`
+          ****************************** NOTICE ******************************
+          *     This LOGIN page request mock server api,                     *
+          *     but the truely backend api HAS NOT implement LOGIN API yet.  * 
+          *     So the function of auth login has been disabled. :)          * 
+          ********************************************************************
+          `);
+      })
         .then(() => {
           window.sessionStorage.setItem("token", "res.token");
           // console.log(redirect.value || "/admin/");
@@ -193,14 +201,14 @@ function handleLogin() {
   });
 }
 
-function getOtherQuery(query) {
-  return Object.keys(query).reduce((acc, cur) => {
-    if (cur !== "redirect") {
-      acc[cur] = query[cur];
-    }
-    return acc;
-  }, {});
-}
+// function getOtherQuery(query) {
+//   return Object.keys(query).reduce((acc, cur) => {
+//     if (cur !== "redirect") {
+//       acc[cur] = query[cur];
+//     }
+//     return acc;
+//   }, {});
+// }
 </script>
 
 <script>
@@ -211,7 +219,7 @@ export default {
         const query = route.query;
         if (query) {
           this.redirect = query.redirect;
-          this.otherQuery = this.getOtherQuery(query);
+          // this.otherQuery = this.getOtherQuery(query);
         }
       },
       immediate: true,
