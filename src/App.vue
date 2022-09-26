@@ -7,7 +7,7 @@ import MainLayout from "@/layout/MainLayout.vue";
 
 import { ref } from "vue";
 
-import { useUsersStore } from "@/stores/user";
+import useUsersStore from "@/stores/UserStore";
 
 const usersStore = useUsersStore();
 

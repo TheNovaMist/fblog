@@ -8,11 +8,11 @@
 </template>
 
 <script setup>
-import BlogBackEnd from "@/pages/BlogBackEnd.vue";
-import BlogFrontEnd from "@/pages/BlogFrontEnd.vue";
+import BlogBackEnd from "@/layout/back/BlogBackEnd.vue";
+import BlogFrontEnd from "@/layout/front/BlogFrontEnd.vue";
 import { ref } from "vue";
 
-import { useUsersStore } from "@/stores/user";
+import useUsersStore from "@/stores/UserStore";
 
 const usersStore = useUsersStore();
 

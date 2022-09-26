@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ElMessageBox, ElMessage } from "element-plus";
-import store from "@/store";
+import UserStore from "@/stores/UserStore";
 import { getToken } from "@/utils/auth";
 
 // create an axios instance
@@ -17,6 +17,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   (config) => {
+    const userStore = UserStore();
+
     // do something before request is sent
 
     config.headers["accept"] = "application/json";
@@ -27,7 +29,7 @@ service.interceptors.request.use(
       config.headers["Content-Type"] = "application/json";
     }
 
-    if (store.getters.token) {
+    if (userStore.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation

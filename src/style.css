@@ -104,17 +104,6 @@ body {
   height: 100%;
 }
 
-/* max-width: 1280px;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh; */
-
 #app {
   display: flex;
 
@@ -125,8 +114,4 @@ body {
 header,
 footer {
   padding: 0% !important;
-}
-
-main {
-  /* text-align: center; */
 }
