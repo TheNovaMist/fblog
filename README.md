@@ -1,4 +1,4 @@
-# Fblog
+# Fblog (vue3)
 
 ## Dev
 
